@@ -1,0 +1,12 @@
+
+  - name: Installing prometheus (Ubuntu)
+    tags: ubuntu, prmths
+    apt:
+      name:  prometheus
+      state: latest
+
+  - name: Starting/Enabling prometheus
+    service:
+      name: prometheus
+      state: restarted
+      enabled: true

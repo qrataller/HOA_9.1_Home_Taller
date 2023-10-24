@@ -1,0 +1,44 @@
+  - name: Creating a directory
+    file:
+      path: ~/prometheus
+      state: directory
+
+  - name: Install unzip
+    package:
+      name: unzip
+
+  - name: Installing prometheus (CentOS)
+    tags: prmths
+    unarchive:
+      src: https://github.com/prometheus/prometheus/releases/download/v2.8.1/prometheus-2.8.1.linux-amd64.tar.gz
+      dest: ~/prometheus
+      remote_src: yes
+      mode: 0777
+      owner: root
+      group: root
+
+  - name: Stop prometheus service
+    service:
+      name: prometheus
+      state: stopped
+
+  - name: Copying prometheus
+    shell: |
+      cd ~/prometheus/prometheus*
+      cp -r . /usr/local/bin/prometheus
+
+  - name: Copying service file of prometheus
+    tags: cservice
+    copy:
+      src: prometheus.service
+      dest: /etc/systemd/system/
+      owner: root
+      group: root
+      mode: 0777
+
+  - name: Starting/Enabling prometheus
+    tags: enable
+    service:
+      name: prometheus
+      state: restarted
+      enabled: true
